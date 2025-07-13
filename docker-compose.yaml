@@ -1,0 +1,29 @@
+services:
+
+  reverseproxy:
+    image: 'reverseproxy:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    networks:
+      - reverseproxy
+
+  amalgamationstarfleet:
+    image: 'amalgamationstarfleet:latest'
+    restart: unless-stopped
+    expose:
+      - '80'
+    networks:
+      - reverseproxy
+
+  michelfamily:
+    image: 'michelfamily:latest'
+    restart: unless-stopped
+    expose:
+      - '80'
+    networks:
+      - reverseproxy
+
+networks:
+  reverseproxy:
+    driver: bridge
