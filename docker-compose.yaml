@@ -5,8 +5,27 @@ services:
     restart: unless-stopped
     ports:
       - '80:80'
+      - '443:443'
+    volumes:
+      - letsencrypt-certs:/etc/letsencrypt
     networks:
       - reverseproxy
+    depends_on:
+      porkbot:
+        condition: service_completed_successfully
+      amalgamationstarfleet:
+        condition: service_started
+      michelfamily:
+        condition: service_started
+
+  porkbot:
+    image: 'infinityofspace/certbot_dns_porkbun:latest'
+    command:
+      - "renew"
+    volumes:
+      - letsencrypt-certs:/etc/letsencrypt
+      - letsencrypt-logs:/var/log/letsencrypt
+      - ./.porkbun.ini:/conf/porkbun.ini
 
   amalgamationstarfleet:
     image: 'amalgamationstarfleet:latest'
@@ -27,3 +46,8 @@ services:
 networks:
   reverseproxy:
     driver: bridge
+
+volumes:
+  letsencrypt-certs:
+  letsencrypt-logs:
+
