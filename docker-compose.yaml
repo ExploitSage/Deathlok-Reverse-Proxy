@@ -1,13 +1,14 @@
 services:
 
   reverseproxy:
-    image: 'reverseproxy:latest'
+    image: 'nginx:alpine'
     restart: unless-stopped
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - letsencrypt-certs:/etc/letsencrypt
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     networks:
       - reverseproxy
     depends_on:
@@ -28,18 +29,22 @@ services:
       - ./.porkbun.ini:/conf/porkbun.ini
 
   amalgamationstarfleet:
-    image: 'amalgamationstarfleet:latest'
+    image: 'nginx:alpine'
     restart: unless-stopped
     expose:
       - '80'
+    volumes:
+      - ./Amalgamation-Starfleet:/usr/share/nginx/html
     networks:
       - reverseproxy
 
   michelfamily:
-    image: 'michelfamily:latest'
+    image: 'nginx:alpine'
     restart: unless-stopped
     expose:
       - '80'
+    volumes:
+      - ./Michel-Family:/usr/share/nginx/html
     networks:
       - reverseproxy
 
